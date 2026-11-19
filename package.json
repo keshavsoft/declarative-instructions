@@ -1,0 +1,38 @@
+{
+  "name": "declarative-instructions",
+  "version": "1.0.0",
+  "description": "Declarative JSONPath transformation rules, AST assembly steps, and collection mapping pipelines for declarative JSON-to-DOM compilers.",
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./v1": {
+      "import": "./src/v1/index.js",
+      "default": "./src/v1/index.js"
+    },
+    "./instructions.json": "./src/v1/instructions.json"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keshavsoft/declarative-instructions.git"
+  },
+  "keywords": [
+    "declarative-ui",
+    "jsonpath",
+    "ast-transformations",
+    "assembly-pipeline",
+    "dom-compiler",
+    "zero-dependency"
+  ],
+  "author": "KeshavSoft",
+  "license": "MIT",
+  "homepage": "https://keshavsoft.github.io/declarative-instructions/"
+}
