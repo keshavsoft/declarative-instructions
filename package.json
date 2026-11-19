@@ -1,7 +1,7 @@
 {
   "name": "declarative-instructions",
-  "version": "1.0.0",
-  "description": "Declarative JSONPath transformation rules, AST assembly steps, and collection mapping pipelines for declarative JSON-to-DOM compilers.",
+  "version": "1.2.1",
+  "description": "High-level declarative UI component blueprints, option configurations, and assembly contracts for JSON-to-DOM compilers.",
   "type": "module",
   "main": "./src/index.js",
   "module": "./src/index.js",
@@ -9,12 +9,7 @@
     ".": {
       "import": "./src/index.js",
       "default": "./src/index.js"
-    },
-    "./v1": {
-      "import": "./src/v1/index.js",
-      "default": "./src/v1/index.js"
-    },
-    "./instructions.json": "./src/v1/instructions.json"
+    }
   },
   "files": [
     "src",
@@ -24,11 +19,13 @@
     "type": "git",
     "url": "git+https://github.com/keshavsoft/declarative-instructions.git"
   },
+  "scripts": {
+    "build": "npx @keshavsoft/build-cli"
+  },
   "keywords": [
     "declarative-ui",
-    "jsonpath",
-    "ast-transformations",
-    "assembly-pipeline",
+    "component-blueprints",
+    "ui-contracts",
     "dom-compiler",
     "zero-dependency"
   ],
