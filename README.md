@@ -2,6 +2,13 @@
 
 > **Declarative JSONPath transformation rules, AST assembly steps, and collection mapping pipelines for declarative JSON-to-DOM compilers.**
 
+---
+[![LIVE DOCS](https://img.shields.io/badge/LIVE-DOCUMENTATION-blue?style=for-the-badge)](https://keshavsoft.github.io/declarative-instructions/)
+[![NPM](https://img.shields.io/badge/NPM-PACKAGE-CB3837?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/declarative-instructions)
+[![GITHUB](https://img.shields.io/badge/GITHUB-REPOSITORY-181717?style=for-the-badge&logo=github)](https://github.com/keshavsoft/declarative-instructions)
+
+---
+
 Part of the **KeshavSoft Declarative UI Architecture** (Tier 3: Assembly Pipeline).
 
 ---
