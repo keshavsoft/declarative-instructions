@@ -6,7 +6,9 @@ function setOptions(select, values, placeholder) {
   select.disabled = values.length === 0;
 }
 
-export function createActions({ spec, editor, elements }) {
+export function createActions({ instructions, spec, editor, elements }) {
+  const data = instructions || spec || {};
+
   const showSource = (value, title, path) => {
     editor.setValue(JSON.stringify(value, null, 2));
     if (elements.editorTitle) elements.editorTitle.textContent = title;
@@ -15,8 +17,8 @@ export function createActions({ spec, editor, elements }) {
 
   const actions = {
     initialize: () => {
-      setOptions(elements.rootSelect, Object.keys(spec), 'Select Element');
-      showSource(spec, 'spec.json', 'Complete library');
+      setOptions(elements.rootSelect, Object.keys(data), 'Select Instruction');
+      showSource(data, 'instructions.json', 'Complete library');
     },
 
     selectRoot: (event, targetElement) => {
@@ -26,13 +28,13 @@ export function createActions({ spec, editor, elements }) {
         return;
       }
 
-      const elementSpec = spec[rootKey];
-      showSource(elementSpec, rootKey, `spec.${rootKey}`);
+      const item = data[rootKey];
+      showSource(item, rootKey, `instructions.${rootKey}`);
     },
 
     showAll: () => {
       if (elements.rootSelect) elements.rootSelect.value = '';
-      showSource(spec, 'spec.json', 'Complete library');
+      showSource(data, 'instructions.json', 'Complete library');
     }
   };
 

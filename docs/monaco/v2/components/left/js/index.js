@@ -6,14 +6,15 @@ const getBindEvents = () =>
   window.ks?.domPrimitiveBindings?.bindEvents ||
   window.ks?.bindEvents;
 
-export async function initLeftWorkspace({ spec, editor }) {
+export async function initLeftWorkspace({ instructions, spec, editor }) {
+  const data = instructions || spec;
   const elements = {
     rootSelect: document.getElementById('rootSelect'),
     editorTitle: document.getElementById('editorTitle'),
     editorPath: document.getElementById('editorPath')
   };
 
-  const actions = createActions({ spec, editor, elements });
+  const actions = createActions({ instructions: data, editor, elements });
   actions.initialize();
 
   let bindEvents = getBindEvents();
