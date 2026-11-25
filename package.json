@@ -1,6 +1,6 @@
 {
   "name": "declarative-instructions",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "High-level declarative UI component blueprints, option configurations, and assembly contracts for JSON-to-DOM compilers.",
   "type": "module",
   "main": "./src/index.js",
@@ -20,7 +20,8 @@
     "url": "git+https://github.com/keshavsoft/declarative-instructions.git"
   },
   "scripts": {
-    "build": "npx @keshavsoft/build-cli"
+    "build:json": "node scripts/sync-latest-json.mjs",
+    "build": "npx @keshavsoft/build-cli && npm run build:json"
   },
   "keywords": [
     "declarative-ui",
