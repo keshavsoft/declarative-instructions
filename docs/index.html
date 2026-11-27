@@ -10,7 +10,7 @@
       location.replace(location.pathname + '/' + location.search + location.hash);
     }
   </script>
-  <title>declarative-instructions — Compiler Assembly Pipeline Hub</title>
+  <title>declarative-instructions — V4 Instruction Catalog</title>
   
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,15 +80,15 @@
         </a>
         <span class="text-zinc-600">/</span>
         <span class="font-bold text-sm text-sky-400 flex items-center gap-1.5">
-          <span>v1</span>
+          <span>catalog v4</span>
         </span>
       </div>
 
       <!-- Quick Links -->
       <div class="flex items-center gap-2 text-xs font-mono">
-        <a href="./monaco/v1/index.html" class="text-sky-300 bg-sky-950/80 border border-sky-700/80 px-2.5 py-1 rounded font-bold hover:bg-sky-900/80 transition flex items-center gap-1">
+        <a href="./json/v4/instructions.json" class="text-sky-300 bg-sky-950/80 border border-sky-700/80 px-2.5 py-1 rounded font-bold hover:bg-sky-900/80 transition flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-          <span>v1 Studio</span>
+          <span>V4 Catalog</span>
         </a>
         <a href="https://github.com/keshavsoft/declarative-instructions" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-white p-1.5 transition ml-1" title="GitHub Repository">
           <i class="bi bi-github text-base"></i>
@@ -111,15 +111,15 @@
     </h1>
 
     <p class="text-base sm:text-lg text-zinc-400 max-w-2xl mb-8 leading-relaxed">
-      How declarative AST transformation rules replaced imperative rendering loops—allowing compilers to assemble complex HTML from pure JSON instructions.
+      A versioned catalog of JSON instructions: each entry describes the source to read, the transformation and template to use, and the destination to update.
     </p>
 
     <!-- Launch CTA -->
     <div class="mb-12">
-      <a href="./monaco/v1/index.html"
+      <a href="./json/v4/instructions.json"
         class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white font-semibold text-sm px-6 py-3 rounded-lg shadow-lg shadow-sky-950/60 transition transform hover:-translate-y-0.5 active:translate-y-0">
         <i class="bi bi-play-fill text-lg"></i>
-        <span>Launch V1 Instructions Studio →</span>
+        <span>Open the V4 instruction catalog →</span>
       </a>
     </div>
 
@@ -135,7 +135,7 @@
           In traditional web development, a compiler contains hundreds of lines of imperative DOM traversal code: finding containers, creating child elements, iterating arrays, and appending nodes.
         </p>
         <p class="pt-2">
-          When the DOM structure changes (e.g., migrating from table colgroups to CSS subgrid or wrapping cells in divs), engineers are forced to rewrite compiler source code. <strong>declarative-instructions</strong> solved this by inventing <strong>declarative assembly instructions</strong>.
+          This package stores reusable instruction definitions as JSON. A consuming runner interprets those definitions against its current state; this package itself does not transform data or mount DOM.
         </p>
       </div>
 
@@ -145,13 +145,13 @@
           <span>The 4-Part Instruction Contract</span>
         </h2>
         <p>
-          Every instruction in <code class="text-sky-300 font-mono">instructions.json</code> declares <em>what to do</em> without writing a single loop:
+          The V4 catalog describes each operation with fields whose shape depends on the kind of work:
         </p>
         <ul class="list-disc list-inside space-y-2 pt-2 text-zinc-400 font-mono text-xs">
-          <li><span class="text-zinc-200 font-semibold">destinationPath:</span> A JSONPath query pointing to where elements mount (<code class="text-zinc-300">$..*[?@.attributes['data-role'] == 'headerRoot']</code>).</li>
-          <li><span class="text-zinc-200 font-semibold">sourcePath:</span> Where input data is read from (e.g., <code class="text-zinc-300">$.columns</code> or <code class="text-zinc-300">$.data</code>).</li>
-          <li><span class="text-zinc-200 font-semibold">templateKey:</span> Key in <code class="text-zinc-300">declarative-spec</code> used as the cloneable tag prototype.</li>
-          <li><span class="text-zinc-200 font-semibold">func:</span> Standard mapping function (<code class="text-zinc-300">fromCollection</code>, <code class="text-zinc-300">oneDimension</code>, etc.).</li>
+          <li><span class="text-zinc-200 font-semibold">sourcePath:</span> Where a runner reads input values, such as <code class="text-zinc-300">$.data.columns</code>.</li>
+          <li><span class="text-zinc-200 font-semibold">func:</span> The transformation to apply, such as <code class="text-zinc-300">fromCollection</code> or <code class="text-zinc-300">rowOnColumn</code>; static actions can use <code class="text-zinc-300">null</code>.</li>
+          <li><span class="text-zinc-200 font-semibold">templateKey:</span> The template name or row and column template names from the spec catalog.</li>
+          <li><span class="text-zinc-200 font-semibold">destinationPath:</span> The JSONPath location to update, with an optional write action for static steps.</li>
         </ul>
       </div>
 
@@ -162,19 +162,20 @@
         </h2>
         <div class="bg-zinc-950 border border-zinc-800 rounded-lg p-4 font-mono text-xs text-zinc-300 overflow-x-auto">
 <pre>{
-  "buildHeader": [
-    {
-      "destinationPath": "$",
-      "templateKey": "buildHeader",
-      "type": "single"
+          "buildBody": {
+    "sourcePath": {
+      "rows": "$.data.data",
+      "columns": "$.data.columns"
     },
-    {
-      "destinationPath": "$..*[?@.attributes['data-role'] == 'headerRoot']",
-      "sourcePath": "$.columns",
-      "templateKey": "buildHeaderCell",
-      "func": "fromCollection"
+    "templateKey": {
+      "rowKey": "buildBodyTr",
+      "columnKey": "buildBodyCell"
+    },
+    "func": "rowOnColumn",
+    "destinationPath": {
+      "jsonPath": "$..*[?@.attributes['data-role'] == 'table-body'].children"
     }
-  ]
+  }
 }</pre>
         </div>
       </div>
@@ -185,11 +186,11 @@
     <div class="w-full mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500 font-mono">
       <div class="flex items-center gap-2">
         <i class="bi bi-tag text-sky-400"></i>
-        <span>declarative-instructions v1.0.0</span>
+        <span>declarative-instructions · V4 catalog</span>
       </div>
       <div class="flex items-center gap-3">
-        <a href="./monaco/v1/index.html" class="text-sky-400 hover:text-sky-300 transition flex items-center gap-1">
-          <span>Open Monaco Studio</span>
+        <a href="./json/v4/instructions.json" class="text-sky-400 hover:text-sky-300 transition flex items-center gap-1">
+          <span>Inspect V4 JSON</span>
           <i class="bi bi-arrow-right"></i>
         </a>
       </div>

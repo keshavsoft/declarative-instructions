@@ -1,92 +1,70 @@
 # declarative-instructions
 
-> **Declarative JSONPath transformation rules, AST assembly steps, and collection mapping pipelines for declarative JSON-to-DOM compilers.**
+A versioned JSON catalog of instructions for assembling JSON UI specifications.
 
----
-[![LIVE DOCS](https://img.shields.io/badge/LIVE-DOCUMENTATION-blue?style=for-the-badge)](https://keshavsoft.github.io/declarative-instructions/)
-[![NPM](https://img.shields.io/badge/NPM-PACKAGE-CB3837?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/declarative-instructions)
-[![GITHUB](https://img.shields.io/badge/GITHUB-REPOSITORY-181717?style=for-the-badge&logo=github)](https://github.com/keshavsoft/declarative-instructions)
+## The story
 
----
+A renderer needs to know where to read values, which transformation to apply, which template to use, and where to place the result. This package records those decisions as data so a compatible consumer can inspect and execute them.
 
-Part of the **KeshavSoft Declarative UI Architecture** (Tier 3: Assembly Pipeline).
+The package exports the catalog from its entry point. It does not run the instructions, own the input state, or mount browser DOM.
 
----
+The V4 catalog covers table construction and features, forms, selects, datalists, accordions, cards, lists, and menus. Entries can describe one operation or an ordered group of operations.
 
-## 📖 The Story
+## How an instruction describes work
 
-In imperative UI compilers, DOM assembly logic is hardcoded inside loops: finding target parents, creating elements, looping arrays, and appending children. When DOM requirements evolve (such as wrapping headers in a container or inserting column groups), developers are forced to rewrite compiler source code.
+The fields depend on the operation, but commonly include:
 
-`declarative-instructions` completely replaces imperative code with **declarative transformation instructions**:
-1. **JSONPath Queries**: Finds target mount points using declarative JSONPath selectors (`$..*[?@.attributes['data-role'] == 'headerRoot']`).
-2. **Dynamic Collection Mapping**: Uses pure transformation functions (`fromCollection`, `oneDimension`, `twoDimensions`) to map columns and data rows into structured DOM trees.
-3. **Template Key Bindings**: Dynamically references blueprints from `declarative-spec` (`buildColgroup`, `buildHeader`, `buildBody`) without hardcoding them.
+- <code>sourcePath</code> locates input values in the consumer’s state.
+- <code>func</code> names the transformation to apply. A null function is used for direct template actions.
+- <code>templateKey</code> selects a template from the spec catalog. Two-dimensional operations can name separate row and column templates.
+- <code>destinationPath</code> identifies where the result is written. Static actions can also specify an action such as <code>push</code> or <code>unshift</code>.
+- <code>skipIf</code> is an optional condition for skipping an operation when matching content already exists.
 
----
+For example, the V4 body instruction reads row data and column metadata, builds table rows from two templates, and targets the table body:
 
-## 📦 Installation
+~~~~json
+{
+  "buildBody": {
+    "sourcePath": {
+      "rows": "$.data.data",
+      "columns": "$.data.columns"
+    },
+    "templateKey": {
+      "rowKey": "buildBodyTr",
+      "columnKey": "buildBodyCell"
+    },
+    "func": "rowOnColumn",
+    "destinationPath": {
+      "jsonPath": "$..*[?@.attributes['data-role'] == 'table-body'].children"
+    }
+  }
+}
+~~~~
 
-```bash
-npm install declarative-instructions
-```
+## Use the catalog
 
----
-
-## 🚀 Usage
-
-### 1. Import Instructions in ES Modules
-
-```javascript
+~~~~js
 import instructions from "declarative-instructions";
 
-// Inspect assembly rules for buildColgroup
-console.log(instructions.buildColgroup);
-```
+const bodyInstruction = instructions.buildBody;
+console.log(bodyInstruction);
+~~~~
 
-### 2. Import Specific Version
+The catalog is data for a consumer that understands this instruction contract. Execution and DOM rendering belong to other parts of an application.
 
-```javascript
-import instructions from "declarative-instructions/v1";
-```
+## Source and documentation
 
-### 3. Direct JSON Import
+- [V4 instruction catalog](src/v4/instructions.json)
+- [Documentation site source](docs/index.html)
+- [Package entry point](src/index.js)
 
-```javascript
-import instructions from "declarative-instructions/instructions.json" with { type: "json" };
-```
+## Install
 
----
+~~~~bash
+npm install declarative-instructions
+~~~~
 
-## 🏛️ Instruction Contract Example
+## License
 
-```json
-{
-  "buildColgroup": [
-    {
-      "destinationPath": "$",
-      "templateKey": "buildColGroup",
-      "type": "single"
-    },
-    {
-      "destinationPath": "$..*[?@.tag == 'colgroup']",
-      "sourcePath": "$.columns",
-      "templateKey": "col",
-      "func": "fromCollection"
-    }
-  ]
-}
-```
+MIT © KeshavSoft.
 
----
-
-## 🌐 Interactive Monaco Studio & Documentation
-
-Explore, edit, and trace all compiler instructions live:
-* **Documentation & Story:** [https://keshavsoft.github.io/declarative-instructions/](https://keshavsoft.github.io/declarative-instructions/)
-* **Monaco Instructions Studio:** [https://keshavsoft.github.io/declarative-instructions/monaco/v1/](https://keshavsoft.github.io/declarative-instructions/monaco/v1/)
-
----
-
-## 📄 License
-
-MIT © [KeshavSoft](https://github.com/keshavsoft)
